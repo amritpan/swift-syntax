@@ -865,6 +865,7 @@ public struct KeyPathComponentListSyntax: SyntaxCollection, SyntaxHashable {
 ///  - ``ExpressionSegmentSyntax``.``ExpressionSegmentSyntax/expressions``
 ///  - ``FunctionCallExprSyntax``.``FunctionCallExprSyntax/arguments``
 ///  - ``KeyPathSubscriptComponentSyntax``.``KeyPathSubscriptComponentSyntax/arguments``
+///  - ``KeyPathMethodComponentSyntax``.``KeyPathMethodComponentSyntax/arguments``
 ///  - ``MacroExpansionDeclSyntax``.``MacroExpansionDeclSyntax/arguments``
 ///  - ``MacroExpansionExprSyntax``.``MacroExpansionExprSyntax/arguments``
 ///  - ``SubscriptCallExprSyntax``.``SubscriptCallExprSyntax/arguments``

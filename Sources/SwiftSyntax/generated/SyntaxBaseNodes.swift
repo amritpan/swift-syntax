@@ -1672,6 +1672,7 @@ extension Syntax {
       .node(KeyPathExprSyntax.self),
       .node(KeyPathOptionalComponentSyntax.self),
       .node(KeyPathPropertyComponentSyntax.self),
+      .node(KeyPathMethodComponentSyntax.self),
       .node(KeyPathSubscriptComponentSyntax.self),
       .node(LabeledExprListSyntax.self),
       .node(LabeledExprSyntax.self),

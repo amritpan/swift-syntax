@@ -1902,7 +1902,25 @@ public func childName(_ keyPath: AnyKeyPath) -> String? {
   case \KeyPathPropertyComponentSyntax.genericArgumentClause:
     return "genericArgumentClause"
   case \KeyPathPropertyComponentSyntax.unexpectedAfterGenericArgumentClause:
-    return "unexpectedAfterGenericArgumentClause"
+    return "unexpectedBeforeDeclName"
+  case \KeyPathMethodComponentSyntax.unexpectedBeforeDeclName:
+    return "unexpectedBeforeDeclName"
+  case \KeyPathMethodComponentSyntax.declName:
+    return "declName"
+  case \KeyPathMethodComponentSyntax.unexpectedBetweenDeclNameAndLeftParen:
+    return "unexpectedBetweenDeclNameAndLeftParen"
+  case \KeyPathMethodComponentSyntax.leftParen:
+    return "leftParen"
+  case \KeyPathMethodComponentSyntax.unexpectedBetweenLeftParenAndArguments:
+    return "unexpectedBetweenLeftParenAndArguments"
+  case \KeyPathMethodComponentSyntax.arguments:
+    return "arguments"
+  case \KeyPathMethodComponentSyntax.unexpectedBetweenArgumentsAndRightParen:
+    return "unexpectedBetweenArgumentsAndRightParen"
+  case \KeyPathMethodComponentSyntax.rightParen:
+    return "rightParen"
+  case \KeyPathMethodComponentSyntax.unexpectedAfterRightParen:
+    return "unexpectedAfterRightParen"
   case \KeyPathSubscriptComponentSyntax.unexpectedBeforeLeftSquare:
     return "unexpectedBeforeLeftSquare"
   case \KeyPathSubscriptComponentSyntax.leftSquare:

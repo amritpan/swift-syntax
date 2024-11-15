@@ -1909,6 +1909,18 @@ open class SyntaxVisitor {
   ///   - node: the node we just finished visiting.
   open func visitPost(_ node: KeyPathPropertyComponentSyntax) {
   }
+  
+  /// Visiting ``KeyPathMethodComponentSyntax`` specifically.
+  ///   - Parameter node: the node we are visiting.
+  ///   - Returns: how should we continue visiting.
+  open func visit(_ node: KeyPathMethodComponentSyntax) -> SyntaxVisitorContinueKind {
+    return .visitChildren
+  }
+
+  /// The function called after visiting ``KeyPathMethodComponentSyntax`` and its descendants.
+  ///   - node: the node we just finished visiting.
+  open func visitPost(_ node: KeyPathMethodComponentSyntax) {
+  }
 
   /// Visiting ``KeyPathSubscriptComponentSyntax`` specifically.
   ///   - Parameter node: the node we are visiting.
@@ -4173,6 +4185,10 @@ open class SyntaxVisitor {
       return {
         self.visitImpl(&$0, KeyPathPropertyComponentSyntax.self, self.visit, self.visitPost)
       }
+    case .keyPathMethodComponent:
+      return {
+        self.visitImpl(&$0, KeyPathMethodComponentSyntax.self, self.visit, self.visitPost)
+      }
     case .keyPathSubscriptComponent:
       return {
         self.visitImpl(&$0, KeyPathSubscriptComponentSyntax.self, self.visit, self.visitPost)
@@ -5013,6 +5029,8 @@ open class SyntaxVisitor {
       visitImpl(&node, KeyPathOptionalComponentSyntax.self, visit, visitPost)
     case .keyPathPropertyComponent:
       visitImpl(&node, KeyPathPropertyComponentSyntax.self, visit, visitPost)
+    case .keyPathMethodComponent:
+      visitImpl(&node, KeyPathMethodComponentSyntax.self, visit, visitPost)
     case .keyPathSubscriptComponent:
       visitImpl(&node, KeyPathSubscriptComponentSyntax.self, visit, visitPost)
     case .labeledExprList:

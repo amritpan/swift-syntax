@@ -245,6 +245,8 @@ extension SyntaxKind {
       return "key path optional component"
     case .keyPathPropertyComponent:
       return "key path property component"
+    case .keyPathMethodComponent:
+      return "key path method component"
     case .keyPathSubscriptComponent:
       return "key path subscript component"
     case .labeledSpecializeArgument:

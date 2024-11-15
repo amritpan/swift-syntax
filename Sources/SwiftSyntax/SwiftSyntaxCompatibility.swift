@@ -380,6 +380,130 @@ extension KeyPathPropertyComponentSyntax {
   }
 }
 
+extension KeyPathMethodComponentSyntax {
+  @available(*, deprecated, renamed: "declName.baseName")
+  public var identifier: TokenSyntax {
+    get {
+      return declName.baseName
+    }
+    set {
+      declName.baseName = newValue
+    }
+  }
+
+  @available(*, deprecated, renamed: "declName.argumentNames")
+  public var declNameArguments: DeclNameArgumentsSyntax? {
+    get {
+      return declName.argumentNames
+    }
+    set {
+      declName.argumentNames = newValue
+    }
+  }
+
+  @available(*, deprecated, renamed: "arguments")
+  public var argumentList: LabeledExprListSyntax? {
+    get {
+      return arguments
+    }
+    set {
+      arguments = newValue
+    }
+  }
+
+  @available(*, deprecated, renamed: "unexpectedBeforeDeclName")
+  public var unexpectedBeforeMethodName: UnexpectedNodesSyntax? {
+    get {
+      return unexpectedBeforeDeclName
+    }
+    set {
+      unexpectedBeforeDeclName = newValue
+    }
+  }
+
+  @available(*, deprecated, renamed: "unexpectedBetweenDeclNameAndLeftParen")
+  public var unexpectedBetweenMethodNameAndLeftParen: UnexpectedNodesSyntax? {
+    get {
+      return unexpectedBetweenDeclNameAndLeftParen
+    }
+    set {
+      unexpectedBetweenDeclNameAndLeftParen = newValue
+    }
+  }
+
+  @available(*, deprecated, renamed: "unexpectedBetweenLeftParenAndArguments")
+  public var unexpectedBetweenLeftParenAndArgumentList: UnexpectedNodesSyntax? {
+    get {
+      return unexpectedBetweenLeftParenAndArguments
+    }
+    set {
+      unexpectedBetweenLeftParenAndArguments = newValue
+    }
+  }
+
+  @available(*, deprecated, renamed: "unexpectedBetweenArgumentsAndRightParen")
+  public var unexpectedAfterArgumentList: UnexpectedNodesSyntax? {
+    get {
+      return unexpectedBetweenArgumentsAndRightParen
+    }
+    set {
+      unexpectedBetweenArgumentsAndRightParen = newValue
+    }
+  }
+
+  @available(*, deprecated, renamed: "leftParen")
+  public var openParen: TokenSyntax {
+    get {
+      return leftParen
+    }
+    set {
+      leftParen = newValue
+    }
+  }
+
+  @available(*, deprecated, renamed: "rightParen")
+  public var closeParen: TokenSyntax {
+    get {
+      return rightParen
+    }
+    set {
+      rightParen = newValue
+    }
+  }
+
+  @available(
+    *,
+    deprecated,
+    renamed: "init(leadingTrivia:_:declName:_:leftParen:_:arguments:_:rightParen:_:trailingTrivia:)"
+  )
+  @_disfavoredOverload
+  public init(
+    leadingTrivia: Trivia? = nil,
+    _ unexpectedBeforeMethodName: UnexpectedNodesSyntax? = nil,
+    methodName: DeclReferenceExprSyntax,
+    _ unexpectedBetweenMethodNameAndLeftParen: UnexpectedNodesSyntax? = nil,
+    openParen: TokenSyntax = .rightParenToken(),
+    _ unexpectedBetweenLeftParenAndArgumentList: UnexpectedNodesSyntax? = nil,
+    argumentList: LabeledExprListSyntax? = nil,
+    _ unexpectedAfterArgumentList: UnexpectedNodesSyntax? = nil,
+    closeParen: TokenSyntax = .leftParenToken(),
+    trailingTrivia: Trivia? = nil
+  ) {
+    self.init(
+      leadingTrivia: leadingTrivia,
+      unexpectedBeforeMethodName,
+      declName: methodName,
+      unexpectedBetweenMethodNameAndLeftParen,
+      leftParen: openParen,
+      unexpectedBetweenLeftParenAndArgumentList,
+      arguments: argumentList,
+      unexpectedAfterArgumentList,
+      rightParen: closeParen,
+      trailingTrivia: trailingTrivia
+    )
+  }
+}
+
 extension NamedDeclSyntax {
   @available(*, deprecated, renamed: "name")
   public var identifier: TokenSyntax {

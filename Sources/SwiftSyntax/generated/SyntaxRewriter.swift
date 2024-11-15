@@ -1196,6 +1196,13 @@ open class SyntaxRewriter {
   open func visit(_ node: KeyPathPropertyComponentSyntax) -> KeyPathPropertyComponentSyntax {
     return visitChildren(node._syntaxNode).cast(KeyPathPropertyComponentSyntax.self)
   }
+  
+  /// Visit a ``KeyPathMethodComponentSyntax``.
+  ///   - Parameter node: the node that is being visited
+  ///   - Returns: the rewritten node
+  open func visit(_ node: KeyPathMethodComponentSyntax) -> KeyPathMethodComponentSyntax {
+    return visitChildren(node._syntaxNode).cast(KeyPathMethodComponentSyntax.self)
+  }
 
   /// Visit a ``KeyPathSubscriptComponentSyntax``.
   ///   - Parameter node: the node that is being visited
@@ -2821,6 +2828,10 @@ open class SyntaxRewriter {
       return {
         self.visitImpl(&$0, KeyPathPropertyComponentSyntax.self, self.visit)
       }
+    case .keyPathMethodComponent:
+      return {
+        self.visitImpl(&$0, KeyPathMethodComponentSyntax.self, self.visit)
+      }
     case .keyPathSubscriptComponent:
       return {
         self.visitImpl(&$0, KeyPathSubscriptComponentSyntax.self, self.visit)
@@ -3657,6 +3668,8 @@ open class SyntaxRewriter {
       return visitImpl(&node, KeyPathOptionalComponentSyntax.self, visit)
     case .keyPathPropertyComponent:
       return visitImpl(&node, KeyPathPropertyComponentSyntax.self, visit)
+    case .keyPathMethodComponent:
+      return visitImpl(&node, KeyPathMethodComponentSyntax.self, visit)
     case .keyPathSubscriptComponent:
       return visitImpl(&node, KeyPathSubscriptComponentSyntax.self, visit)
     case .labeledExprList:
