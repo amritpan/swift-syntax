@@ -25,6 +25,7 @@
 ///  - ``GenericSpecializationExprSyntax``.``GenericSpecializationExprSyntax/genericArgumentClause``
 ///  - ``IdentifierTypeSyntax``.``IdentifierTypeSyntax/genericArgumentClause``
 ///  - ``KeyPathPropertyComponentSyntax``.``KeyPathPropertyComponentSyntax/genericArgumentClause``
+///  - ``KeyPathMethodComponentSyntax``.``KeyPathMethodComponentSyntax/genericArgumentClause``
 ///  - ``MacroExpansionDeclSyntax``.``MacroExpansionDeclSyntax/genericArgumentClause``
 ///  - ``MacroExpansionExprSyntax``.``MacroExpansionExprSyntax/genericArgumentClause``
 ///  - ``MemberTypeSyntax``.``MemberTypeSyntax/genericArgumentClause``
