@@ -1905,6 +1905,18 @@ open class SyntaxVisitor {
   ///   - node: the node we just finished visiting.
   open func visitPost(_ node: KeyPathPropertyComponentSyntax) {
   }
+  
+  /// Visiting ``KeyPathMethodComponentSyntax`` specifically.
+  ///   - Parameter node: the node we are visiting.
+  ///   - Returns: how should we continue visiting.
+  open func visit(_ node: KeyPathMethodComponentSyntax) -> SyntaxVisitorContinueKind {
+    return .visitChildren
+  }
+
+  /// The function called after visiting ``KeyPathMethodComponentSyntax`` and its descendants.
+  ///   - node: the node we just finished visiting.
+  open func visitPost(_ node: KeyPathMethodComponentSyntax) {
+  }
 
   /// Visiting ``KeyPathSubscriptComponentSyntax`` specifically.
   ///   - Parameter node: the node we are visiting.
@@ -4754,6 +4766,14 @@ open class SyntaxVisitor {
     }
     visitPost(KeyPathPropertyComponentSyntax(unsafeCasting: node))
   }
+  
+  @inline(never)
+  private func visitKeyPathMethodComponentSyntaxImpl(_ node: Syntax) {
+    if visit(KeyPathMethodComponentSyntax(unsafeCasting: node)) == .visitChildren {
+      visitChildren(node)
+    }
+    visitPost(KeyPathMethodComponentSyntax(unsafeCasting: node))
+  }
 
   @inline(never)
   private func visitKeyPathSubscriptComponentSyntaxImpl(_ node: Syntax) {
@@ -6133,6 +6153,8 @@ open class SyntaxVisitor {
       return self.visitKeyPathOptionalComponentSyntaxImpl(_:)
     case .keyPathPropertyComponent:
       return self.visitKeyPathPropertyComponentSyntaxImpl(_:)
+    case .keyPathMethodComponent:
+      return self.visitKeyPathMethodComponentSyntaxImpl(_:)
     case .keyPathSubscriptComponent:
       return self.visitKeyPathSubscriptComponentSyntaxImpl(_:)
     case .labeledExprList:
@@ -6713,6 +6735,8 @@ open class SyntaxVisitor {
       self.visitKeyPathOptionalComponentSyntaxImpl(node)
     case .keyPathPropertyComponent:
       self.visitKeyPathPropertyComponentSyntaxImpl(node)
+    case .keyPathMethodComponent:
+      self.visitKeyPathMethodComponentSyntaxImpl(node)
     case .keyPathSubscriptComponent:
       self.visitKeyPathSubscriptComponentSyntaxImpl(node)
     case .labeledExprList:
