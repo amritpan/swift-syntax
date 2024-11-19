@@ -256,6 +256,137 @@ final class ExpressionTests: ParserTestCase {
     )
   }
 
+  func testKeyPathMethod() {
+    assertParse(
+      #"\Foo.method()"#,
+      substructure: KeyPathExprSyntax(
+        root: TypeSyntax("Foo"),
+        components: KeyPathComponentListSyntax([
+          KeyPathComponentSyntax(
+            period: .periodToken(),
+            component: KeyPathComponentSyntax.Component(
+              KeyPathMethodComponentSyntax(
+                declName: DeclReferenceExprSyntax(baseName: .identifier("method")),
+                leftParen: .leftParenToken(),
+                rightParen: .rightParenToken()
+              )
+            )
+          )
+        ])
+      )
+    )
+
+    assertParse(
+      #"\Foo.method(10)"#,
+      substructure: KeyPathExprSyntax(
+        root: TypeSyntax("Foo"),
+        components: KeyPathComponentListSyntax([
+          KeyPathComponentSyntax(
+            period: .periodToken(),
+            component: .init(
+              KeyPathMethodComponentSyntax(
+                declName: DeclReferenceExprSyntax(baseName: .identifier("method")),
+                leftParen: .leftParenToken(),
+                arguments: LabeledExprListSyntax([
+                  LabeledExprSyntax(
+                    label: nil,
+                    colon: nil,
+                    expression: ExprSyntax("10")
+                  )
+                ]),
+                rightParen: .rightParenToken()
+              )
+            )
+          )
+        ])
+      )
+    )
+
+    assertParse(
+      #"\Foo.method(arg: 10)"#,
+      substructure: KeyPathExprSyntax(
+        root: TypeSyntax("Foo"),
+        components: KeyPathComponentListSyntax([
+          KeyPathComponentSyntax(
+            period: .periodToken(),
+            component: .init(
+              KeyPathMethodComponentSyntax(
+                declName: DeclReferenceExprSyntax(baseName: .identifier("method")),
+                leftParen: .leftParenToken(),
+                arguments: LabeledExprListSyntax([
+                  LabeledExprSyntax(
+                    label: .identifier("arg"),
+                    colon: .colonToken(),
+                    expression: ExprSyntax("10")
+                  )
+                ]),
+                rightParen: .rightParenToken()
+              )
+            )
+          )
+        ])
+      )
+    )
+
+    assertParse(
+      #"\Foo.method().anotherMethod(arg: 10)"#,
+      substructure: KeyPathExprSyntax(
+        root: TypeSyntax("Foo"),
+        components: KeyPathComponentListSyntax([
+          KeyPathComponentSyntax(
+            period: .periodToken(),
+            component: .init(
+              KeyPathMethodComponentSyntax(
+                declName: DeclReferenceExprSyntax(baseName: .identifier("method")),
+                leftParen: .leftParenToken(),
+                arguments: nil,
+                rightParen: .rightParenToken()
+              )
+            )
+          ),
+          KeyPathComponentSyntax(
+            period: .periodToken(),
+            component: .init(
+              KeyPathMethodComponentSyntax(
+                declName: DeclReferenceExprSyntax(baseName: .identifier("anotherMethod")),
+                leftParen: .leftParenToken(),
+                arguments: LabeledExprListSyntax([
+                  LabeledExprSyntax(
+                    label: .identifier("arg"),
+                    colon: .colonToken(),
+                    expression: ExprSyntax("10")
+                  )
+                ]),
+                rightParen: .rightParenToken()
+              )
+            )
+          ),
+        ])
+      )
+    )
+
+    assertParse(
+      #"""
+      \Foo.method(1️⃣
+      """#,
+      diagnostics: [
+        DiagnosticSpec(
+          message: "expected value and ')' to end key path method component",
+          fixIts: ["insert value and ')'"]
+        )
+      ],
+      fixedSource: #"\Foo.method(<#expression#>)"#
+    )
+
+    assertParse(
+      #"\Foo.1️⃣()"#,
+      diagnostics: [
+        DiagnosticSpec(message: "expected identifier in key path method component", fixIts: ["insert identifier"])
+      ],
+      fixedSource: #"\Foo.<#identifier#>()"#
+    )
+  }
+
   func testKeyPathSubscript() {
     assertParse(
       #"\Foo.Type.[2]"#,
