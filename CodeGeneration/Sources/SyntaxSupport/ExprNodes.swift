@@ -1210,6 +1210,10 @@ public let EXPR_NODES: [Node] = [
             kind: .node(kind: .keyPathPropertyComponent)
           ),
           Child(
+            name: "method",
+            kind: .node(kind: .keyPathMethodComponent)
+          ),
+          Child(
             name: "subscript",
             kind: .node(kind: .keyPathSubscriptComponent)
           ),
@@ -1310,6 +1314,40 @@ public let EXPR_NODES: [Node] = [
         "arguments": .renamed(from: "argumentList"),
         "rightSquare": .renamed(from: "rightBracket"),
       ]
+    ]
+  ),
+
+  Node(
+    kind: .keyPathMethodComponent,
+    base: .syntax,
+    nameForDiagnostics: "key path method component",
+    documentation: "A key path component like `.method()`, `.method(10)`, or `.method(val: 10)`.",
+    children: [
+      Child(
+        name: "declName",
+        kind: .node(kind: .declReferenceExpr)
+      ),
+      Child(
+        name: "genericArgumentClause",
+        kind: .node(kind: .genericArgumentClause),
+        isOptional: true
+      ),
+      Child(
+        name: "leftParen",
+        kind: .token(choices: [.token(.leftParen)]),
+        isOptional: true
+      ),
+      Child(
+        name: "arguments",
+        kind: .collection(kind: .labeledExprList, collectionElementName: "Argument"),
+        nameForDiagnostics: "arguments",
+        isOptional: true
+      ),
+      Child(
+        name: "rightParen",
+        kind: .token(choices: [.token(.rightParen)]),
+        isOptional: true
+      ),
     ]
   ),
 
