@@ -1103,11 +1103,75 @@ extension Parser {
         continue
       }
 
-      // Check for a .name or .1 suffix.
+      // Check for a .name, .1, .name(), .name("Kiwi"), .name(fruit: "Kiwi) suffix
       if self.at(.period) {
         let (unexpectedPeriod, period, declName, generics) = parseDottedExpressionSuffix(
           previousNode: components.last?.raw ?? rootType?.raw ?? backslash.raw
         )
+
+        if self.experimentalFeatures.contains(.keypathWithMethodMembers) {
+          // If `()` exist, then parse as method
+          if self.at(.leftParen) {
+            let leftParen = self.consumeAnyToken()
+            let args: [RawLabeledExprSyntax]
+            if self.at(.rightParen) {
+              args = []
+            } else {
+              args = self.parseArgumentListElements(
+                pattern: pattern,
+                allowTrailingComma: true
+              )
+            }
+            let (unexpectedBeforeRParen, rightParen) = self.expect(.rightParen)
+
+            if (!args.isEmpty) {
+              components.append(
+                RawKeyPathComponentSyntax(
+                  unexpectedPeriod,
+                  period: period,
+                  component: .method(
+                    RawKeyPathMethodComponentSyntax(
+                      declName: declName,
+                      genericArgumentClause: generics,
+                      leftParen: leftParen,
+                      arguments: RawLabeledExprListSyntax(
+                        elements: args,
+                        arena: self.arena
+                      ),
+                      unexpectedBeforeRParen,
+                      rightParen: rightParen,
+                      arena: self.arena
+                    )
+                  ),
+                  arena: self.arena
+                )
+              )
+            } else {
+              components.append(
+                RawKeyPathComponentSyntax(
+                  unexpectedPeriod,
+                  period: period,
+                  component: .method(
+                    RawKeyPathMethodComponentSyntax(
+                      declName: declName,
+                      genericArgumentClause: generics,
+                      leftParen: leftParen,
+                      arguments: nil,
+                      unexpectedBeforeRParen,
+                      rightParen: rightParen,
+                      arena: self.arena
+                    )
+                  ),
+                  arena: self.arena
+                )
+              )
+            }
+
+            continue
+          }
+        }
+
+        // Otherwise, parse as property
         components.append(
           RawKeyPathComponentSyntax(
             unexpectedPeriod,
