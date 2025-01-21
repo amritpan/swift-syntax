@@ -955,6 +955,41 @@ extension InitializerDeclSyntax {
   }
 }
 
+extension KeyPathMethodComponentSyntax {
+  /// A convenience initializer that allows initializing syntax collections using result builders
+  public init(
+    leadingTrivia: Trivia? = nil,
+    unexpectedBeforeDeclName: UnexpectedNodesSyntax? = nil,
+    declName: DeclReferenceExprSyntax,
+    unexpectedBetweenDeclNameAndGenericArgumentClause: UnexpectedNodesSyntax? = nil,
+    genericArgumentClause: GenericArgumentClauseSyntax? = nil,
+    unexpectedBetweenGenericArgumentClauseAndLeftParen: UnexpectedNodesSyntax? = nil,
+    leftParen: TokenSyntax? = nil,
+    unexpectedBetweenLeftParenAndArguments: UnexpectedNodesSyntax? = nil,
+    unexpectedBetweenArgumentsAndRightParen: UnexpectedNodesSyntax? = nil,
+    rightParen: TokenSyntax? = nil,
+    unexpectedAfterRightParen: UnexpectedNodesSyntax? = nil,
+    @LabeledExprListBuilder argumentsBuilder: () throws -> LabeledExprListSyntax?,
+    trailingTrivia: Trivia? = nil
+  ) rethrows {
+    try self.init(
+      leadingTrivia: leadingTrivia,
+      unexpectedBeforeDeclName,
+      declName: declName,
+      unexpectedBetweenDeclNameAndGenericArgumentClause,
+      genericArgumentClause: genericArgumentClause,
+      unexpectedBetweenGenericArgumentClauseAndLeftParen,
+      leftParen: leftParen,
+      unexpectedBetweenLeftParenAndArguments,
+      arguments: argumentsBuilder(),
+      unexpectedBetweenArgumentsAndRightParen,
+      rightParen: rightParen,
+      unexpectedAfterRightParen,
+      trailingTrivia: trailingTrivia
+    )
+  }
+}
+
 extension KeyPathSubscriptComponentSyntax {
   /// A convenience initializer that allows initializing syntax collections using result builders
   public init(

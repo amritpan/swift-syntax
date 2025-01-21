@@ -174,6 +174,7 @@ public enum SyntaxEnum: Sendable {
   case keyPathComponentList(KeyPathComponentListSyntax)
   case keyPathComponent(KeyPathComponentSyntax)
   case keyPathExpr(KeyPathExprSyntax)
+  case keyPathMethodComponent(KeyPathMethodComponentSyntax)
   case keyPathOptionalComponent(KeyPathOptionalComponentSyntax)
   case keyPathPropertyComponent(KeyPathPropertyComponentSyntax)
   case keyPathSubscriptComponent(KeyPathSubscriptComponentSyntax)
@@ -635,6 +636,8 @@ extension Syntax {
       return .keyPathComponent(KeyPathComponentSyntax(self)!)
     case .keyPathExpr:
       return .keyPathExpr(KeyPathExprSyntax(self)!)
+    case .keyPathMethodComponent:
+      return .keyPathMethodComponent(KeyPathMethodComponentSyntax(self)!)
     case .keyPathOptionalComponent:
       return .keyPathOptionalComponent(KeyPathOptionalComponentSyntax(self)!)
     case .keyPathPropertyComponent:

@@ -66,16 +66,19 @@ public struct RawKeyPathComponentListSyntax: RawSyntaxNodeProtocol {
 public struct RawKeyPathComponentSyntax: RawSyntaxNodeProtocol {
   public enum Component: RawSyntaxNodeProtocol {
     case property(RawKeyPathPropertyComponentSyntax)
+    case method(RawKeyPathMethodComponentSyntax)
     case `subscript`(RawKeyPathSubscriptComponentSyntax)
     case optional(RawKeyPathOptionalComponentSyntax)
 
     public static func isKindOf(_ raw: RawSyntax) -> Bool {
-      RawKeyPathPropertyComponentSyntax.isKindOf(raw) || RawKeyPathSubscriptComponentSyntax.isKindOf(raw) || RawKeyPathOptionalComponentSyntax.isKindOf(raw)
+      RawKeyPathPropertyComponentSyntax.isKindOf(raw) || RawKeyPathMethodComponentSyntax.isKindOf(raw) || RawKeyPathSubscriptComponentSyntax.isKindOf(raw) || RawKeyPathOptionalComponentSyntax.isKindOf(raw)
     }
 
     public var raw: RawSyntax {
       switch self {
       case .property(let node):
+        return node.raw
+      case .method(let node):
         return node.raw
       case .subscript(let node):
         return node.raw
@@ -87,6 +90,8 @@ public struct RawKeyPathComponentSyntax: RawSyntaxNodeProtocol {
     public init?(_ node: __shared some RawSyntaxNodeProtocol) {
       if let node = node.as(RawKeyPathPropertyComponentSyntax.self) {
         self = .property(node)
+      } else if let node = node.as(RawKeyPathMethodComponentSyntax.self) {
+        self = .method(node)
       } else if let node = node.as(RawKeyPathSubscriptComponentSyntax.self) {
         self = .subscript(node)
       } else if let node = node.as(RawKeyPathOptionalComponentSyntax.self) {
@@ -244,6 +249,112 @@ public struct RawKeyPathExprSyntax: RawExprSyntaxNodeProtocol {
 
   public var unexpectedAfterComponents: RawUnexpectedNodesSyntax? {
     layoutView.children[6].map(RawUnexpectedNodesSyntax.init(raw:))
+  }
+}
+
+@_spi(RawSyntax)
+public struct RawKeyPathMethodComponentSyntax: RawSyntaxNodeProtocol {
+  @_spi(RawSyntax)
+  public var layoutView: RawSyntaxLayoutView {
+    return raw.layoutView!
+  }
+
+  public static func isKindOf(_ raw: RawSyntax) -> Bool {
+    return raw.kind == .keyPathMethodComponent
+  }
+
+  public var raw: RawSyntax
+
+  init(raw: RawSyntax) {
+    precondition(Self.isKindOf(raw))
+    self.raw = raw
+  }
+
+  private init(unchecked raw: RawSyntax) {
+    self.raw = raw
+  }
+
+  public init?(_ other: some RawSyntaxNodeProtocol) {
+    guard Self.isKindOf(other.raw) else {
+      return nil
+    }
+    self.init(unchecked: other.raw)
+  }
+
+  public init(
+    _ unexpectedBeforeDeclName: RawUnexpectedNodesSyntax? = nil,
+    declName: RawDeclReferenceExprSyntax,
+    _ unexpectedBetweenDeclNameAndGenericArgumentClause: RawUnexpectedNodesSyntax? = nil,
+    genericArgumentClause: RawGenericArgumentClauseSyntax?,
+    _ unexpectedBetweenGenericArgumentClauseAndLeftParen: RawUnexpectedNodesSyntax? = nil,
+    leftParen: RawTokenSyntax?,
+    _ unexpectedBetweenLeftParenAndArguments: RawUnexpectedNodesSyntax? = nil,
+    arguments: RawLabeledExprListSyntax?,
+    _ unexpectedBetweenArgumentsAndRightParen: RawUnexpectedNodesSyntax? = nil,
+    rightParen: RawTokenSyntax?,
+    _ unexpectedAfterRightParen: RawUnexpectedNodesSyntax? = nil,
+    arena: __shared SyntaxArena
+  ) {
+    let raw = RawSyntax.makeLayout(
+      kind: .keyPathMethodComponent, uninitializedCount: 11, arena: arena) { layout in
+      layout.initialize(repeating: nil)
+      layout[0] = unexpectedBeforeDeclName?.raw
+      layout[1] = declName.raw
+      layout[2] = unexpectedBetweenDeclNameAndGenericArgumentClause?.raw
+      layout[3] = genericArgumentClause?.raw
+      layout[4] = unexpectedBetweenGenericArgumentClauseAndLeftParen?.raw
+      layout[5] = leftParen?.raw
+      layout[6] = unexpectedBetweenLeftParenAndArguments?.raw
+      layout[7] = arguments?.raw
+      layout[8] = unexpectedBetweenArgumentsAndRightParen?.raw
+      layout[9] = rightParen?.raw
+      layout[10] = unexpectedAfterRightParen?.raw
+    }
+    self.init(unchecked: raw)
+  }
+
+  public var unexpectedBeforeDeclName: RawUnexpectedNodesSyntax? {
+    layoutView.children[0].map(RawUnexpectedNodesSyntax.init(raw:))
+  }
+
+  public var declName: RawDeclReferenceExprSyntax {
+    layoutView.children[1].map(RawDeclReferenceExprSyntax.init(raw:))!
+  }
+
+  public var unexpectedBetweenDeclNameAndGenericArgumentClause: RawUnexpectedNodesSyntax? {
+    layoutView.children[2].map(RawUnexpectedNodesSyntax.init(raw:))
+  }
+
+  public var genericArgumentClause: RawGenericArgumentClauseSyntax? {
+    layoutView.children[3].map(RawGenericArgumentClauseSyntax.init(raw:))
+  }
+
+  public var unexpectedBetweenGenericArgumentClauseAndLeftParen: RawUnexpectedNodesSyntax? {
+    layoutView.children[4].map(RawUnexpectedNodesSyntax.init(raw:))
+  }
+
+  public var leftParen: RawTokenSyntax? {
+    layoutView.children[5].map(RawTokenSyntax.init(raw:))
+  }
+
+  public var unexpectedBetweenLeftParenAndArguments: RawUnexpectedNodesSyntax? {
+    layoutView.children[6].map(RawUnexpectedNodesSyntax.init(raw:))
+  }
+
+  public var arguments: RawLabeledExprListSyntax? {
+    layoutView.children[7].map(RawLabeledExprListSyntax.init(raw:))
+  }
+
+  public var unexpectedBetweenArgumentsAndRightParen: RawUnexpectedNodesSyntax? {
+    layoutView.children[8].map(RawUnexpectedNodesSyntax.init(raw:))
+  }
+
+  public var rightParen: RawTokenSyntax? {
+    layoutView.children[9].map(RawTokenSyntax.init(raw:))
+  }
+
+  public var unexpectedAfterRightParen: RawUnexpectedNodesSyntax? {
+    layoutView.children[10].map(RawUnexpectedNodesSyntax.init(raw:))
   }
 }
 
