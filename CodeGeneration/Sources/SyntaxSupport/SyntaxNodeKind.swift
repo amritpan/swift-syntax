@@ -178,6 +178,7 @@ public enum SyntaxNodeKind: String, CaseIterable, IdentifierConvertible, TypeCon
   case keyPathOptionalComponent
   case keyPathPropertyComponent
   case keyPathSubscriptComponent
+  case keyPathMethodComponent
   case labeledExpr
   case labeledExprList
   case labeledSpecializeArgument
