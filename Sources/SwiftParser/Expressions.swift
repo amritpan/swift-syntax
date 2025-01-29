@@ -1103,8 +1103,48 @@ extension Parser {
         continue
       }
 
-      // Check for a .name or .1 suffix.
+      // Check for a .name, .1, .name(), .name("Kiwi"), .name(fruit:),
+      // .name(_:), .name(fruit: "Kiwi) suffix.
       if self.at(.period) {
+        // Parse as a keypath method if fully applied.
+        if self.experimentalFeatures.contains(.keypathWithMethodMembers)
+          && !self.withLookahead({ $0.isPartiallyAppliedKeyPathMethod() })
+        {
+          let (unexpectedPeriod, period, declName, _) = parseDottedExpressionSuffix(
+            previousNode: components.last?.raw ?? rootType?.raw ?? backslash.raw
+          )
+          let leftParen = self.consumeAnyToken()
+          var args: [RawLabeledExprSyntax] = []
+          if !self.at(.rightParen) {
+            args = self.parseArgumentListElements(
+              pattern: pattern,
+              allowTrailingComma: true
+            )
+          }
+          let (unexpectedBeforeRParen, rightParen) = self.expect(.rightParen)
+          components.append(
+            RawKeyPathComponentSyntax(
+              unexpectedPeriod,
+              period: period,
+              component: .method(
+                RawKeyPathMethodComponentSyntax(
+                  declName: declName,
+                  leftParen: leftParen,
+                  arguments: RawLabeledExprListSyntax(
+                    elements: args,
+                    arena: self.arena
+                  ),
+                  unexpectedBeforeRParen,
+                  rightParen: rightParen,
+                  arena: self.arena
+                )
+              ),
+              arena: self.arena
+            )
+          )
+          continue
+        }
+        // Else, parse as a property.
         let (unexpectedPeriod, period, declName, generics) = parseDottedExpressionSuffix(
           previousNode: components.last?.raw ?? rootType?.raw ?? backslash.raw
         )
@@ -1128,7 +1168,6 @@ extension Parser {
       // No more postfix expressions.
       break
     }
-
     return RawKeyPathExprSyntax(
       unexpectedBeforeBackslash,
       backslash: backslash,
@@ -2017,6 +2056,23 @@ extension Parser {
 }
 
 extension Parser.Lookahead {
+  /// Check if partially or fully applied keypath method.
+  mutating func isPartiallyAppliedKeyPathMethod() -> Bool {
+    var lookahead = self.lookahead()
+    while true {
+      let token = lookahead.peek().rawTokenKind
+      if token == .endOfFile {
+        return false
+      }
+      if token == .colon {
+        lookahead.consumeAnyToken()
+        return lookahead.peek().rawTokenKind == .rightParen
+      }
+      lookahead.consumeAnyToken()
+    }
+    return false
+  }
+
   mutating func atStartOfLabelledTrailingClosure() -> Bool {
     // Fast path: the next two tokens must be a label and a colon.
     // But 'default:' is ambiguous with switch cases and we disallow it

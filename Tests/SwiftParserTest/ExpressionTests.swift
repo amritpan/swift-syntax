@@ -256,6 +256,264 @@ final class ExpressionTests: ParserTestCase {
     )
   }
 
+  func testKeyPathMethodAndInitializers() {
+    assertParse(
+      #"\Foo.method()"#,
+      substructure: KeyPathExprSyntax(
+        root: TypeSyntax("Foo"),
+        components: KeyPathComponentListSyntax([
+          KeyPathComponentSyntax(
+            period: .periodToken(),
+            component: KeyPathComponentSyntax.Component(
+              KeyPathMethodComponentSyntax(
+                declName: DeclReferenceExprSyntax(baseName: .identifier("method")),
+                leftParen: .leftParenToken(),
+                arguments: LabeledExprListSyntax([]),
+                rightParen: .rightParenToken()
+              )
+            )
+          )
+        ])
+      ),
+      experimentalFeatures: .keypathWithMethodMembers
+    )
+
+    //    assertParse(
+    //      #"\Foo.method<Int>()"#,
+    //      substructure: KeyPathExprSyntax(
+    //        root: TypeSyntax("Foo"),
+    //        components: KeyPathComponentListSyntax([
+    //          KeyPathComponentSyntax(
+    //            period: .periodToken(),
+    //            component: KeyPathComponentSyntax.Component(
+    //              KeyPathPropertyComponentSyntax(
+    //                declName: DeclReferenceExprSyntax(baseName: .identifier("method")),
+    //                leftParen: .leftParenToken(),
+    //                arguments: LabeledExprListSyntax([]),
+    //                rightParen: .rightParenToken()
+    //              )
+    //            )
+    //          )
+    //        ])
+    //      ),
+    //      experimentalFeatures: .keypathWithMethodMembers
+    //    )
+
+    assertParse(
+      #"\Foo.method(10)"#,
+      substructure: KeyPathExprSyntax(
+        root: TypeSyntax("Foo"),
+        components: KeyPathComponentListSyntax([
+          KeyPathComponentSyntax(
+            period: .periodToken(),
+            component: .init(
+              KeyPathMethodComponentSyntax(
+                declName: DeclReferenceExprSyntax(baseName: .identifier("method")),
+                leftParen: .leftParenToken(),
+                arguments: LabeledExprListSyntax([
+                  LabeledExprSyntax(
+                    label: nil,
+                    colon: nil,
+                    expression: ExprSyntax("10")
+                  )
+                ]),
+                rightParen: .rightParenToken()
+              )
+            )
+          )
+        ])
+      ),
+      experimentalFeatures: .keypathWithMethodMembers
+    )
+
+    assertParse(
+      #"\Foo.method(arg: 10)"#,
+      substructure: KeyPathExprSyntax(
+        root: TypeSyntax("Foo"),
+        components: KeyPathComponentListSyntax([
+          KeyPathComponentSyntax(
+            period: .periodToken(),
+            component: .init(
+              KeyPathMethodComponentSyntax(
+                declName: DeclReferenceExprSyntax(baseName: .identifier("method")),
+                leftParen: .leftParenToken(),
+                arguments: LabeledExprListSyntax([
+                  LabeledExprSyntax(
+                    label: .identifier("arg"),
+                    colon: .colonToken(),
+                    expression: ExprSyntax("10")
+                  )
+                ]),
+                rightParen: .rightParenToken()
+              )
+            )
+          )
+        ])
+      ),
+      experimentalFeatures: .keypathWithMethodMembers
+    )
+
+    assertParse(
+      #"\Foo.method(_:)"#,
+      substructure: KeyPathExprSyntax(
+        root: TypeSyntax("Foo"),
+        components: KeyPathComponentListSyntax([
+          KeyPathComponentSyntax(
+            period: .periodToken(),
+            component: .init(
+              KeyPathPropertyComponentSyntax(
+                declName: DeclReferenceExprSyntax(
+                  baseName: .identifier("method"),
+                  argumentNames: DeclNameArgumentsSyntax(
+                    leftParen: .leftParenToken(),
+                    arguments: [
+                      DeclNameArgumentSyntax(name: .wildcardToken(), colon: .colonToken())
+                    ],
+                    rightParen: .rightParenToken()
+                  )
+                )
+              )
+            )
+          )
+        ])
+      ),
+      experimentalFeatures: .keypathWithMethodMembers
+    )
+
+    assertParse(
+      #"\Foo.method(arg:)"#,
+      substructure: KeyPathExprSyntax(
+        root: TypeSyntax("Foo"),
+        components: KeyPathComponentListSyntax([
+          KeyPathComponentSyntax(
+            period: .periodToken(),
+            component: .init(
+              KeyPathPropertyComponentSyntax(
+                declName: DeclReferenceExprSyntax(
+                  baseName: .identifier("method"),
+                  argumentNames: DeclNameArgumentsSyntax(
+                    leftParen: .leftParenToken(),
+                    arguments: [
+                      DeclNameArgumentSyntax(name: .identifier("arg"), colon: .colonToken())
+                    ],
+                    rightParen: .rightParenToken()
+                  )
+                )
+              )
+            )
+          )
+        ])
+      ),
+      experimentalFeatures: .keypathWithMethodMembers
+    )
+
+    assertParse(
+      #"\Foo.method().anotherMethod(arg: 10)"#,
+      substructure: KeyPathExprSyntax(
+        root: TypeSyntax("Foo"),
+        components: KeyPathComponentListSyntax([
+          KeyPathComponentSyntax(
+            period: .periodToken(),
+            component: .init(
+              KeyPathMethodComponentSyntax(
+                declName: DeclReferenceExprSyntax(baseName: .identifier("method")),
+                leftParen: .leftParenToken(),
+                arguments: LabeledExprListSyntax([]),
+                rightParen: .rightParenToken()
+              )
+            )
+          ),
+          KeyPathComponentSyntax(
+            period: .periodToken(),
+            component: .init(
+              KeyPathMethodComponentSyntax(
+                declName: DeclReferenceExprSyntax(baseName: .identifier("anotherMethod")),
+                leftParen: .leftParenToken(),
+                arguments: LabeledExprListSyntax([
+                  LabeledExprSyntax(
+                    label: .identifier("arg"),
+                    colon: .colonToken(),
+                    expression: ExprSyntax("10")
+                  )
+                ]),
+                rightParen: .rightParenToken()
+              )
+            )
+          ),
+        ])
+      ),
+      experimentalFeatures: .keypathWithMethodMembers
+    )
+
+    assertParse(
+      #"\Foo.Type.init()"#,
+      substructure: KeyPathExprSyntax(
+        root: TypeSyntax(
+          MetatypeTypeSyntax(baseType: TypeSyntax("Foo"), metatypeSpecifier: .keyword(.Type))
+        ),
+        components: KeyPathComponentListSyntax([
+          KeyPathComponentSyntax(
+            period: .periodToken(),
+            component: KeyPathComponentSyntax.Component(
+              KeyPathMethodComponentSyntax(
+                declName: DeclReferenceExprSyntax(baseName: .keyword(.init("init")!)),
+                leftParen: .leftParenToken(),
+                arguments: LabeledExprListSyntax([]),
+                rightParen: .rightParenToken()
+              )
+            )
+          )
+        ])
+      ),
+      experimentalFeatures: .keypathWithMethodMembers
+    )
+
+    assertParse(
+      #"""
+      \Foo.method(1️⃣
+      """#,
+      diagnostics: [
+        DiagnosticSpec(
+          message: "expected value and ')' to end key path method component",
+          fixIts: ["insert value and ')'"]
+        )
+      ],
+      fixedSource: #"\Foo.method(<#expression#>)"#,
+      experimentalFeatures: .keypathWithMethodMembers
+    )
+
+    assertParse(
+      #"\Foo.1️⃣()"#,
+      diagnostics: [
+        DiagnosticSpec(message: "expected identifier in key path method component", fixIts: ["insert identifier"])
+      ],
+      fixedSource: #"\Foo.<#identifier#>()"#,
+      experimentalFeatures: .keypathWithMethodMembers
+    )
+
+    assertParse(
+      #"\Foo.method<Int>1️⃣(arg:2️⃣)"#,
+      diagnostics: [
+        DiagnosticSpec(
+          locationMarker: "1️⃣",
+          message: "consecutive statements on a line must be separated by newline or ';'",
+          fixIts: ["insert newline", "insert ';'"]
+        ),
+        DiagnosticSpec(
+          locationMarker: "2️⃣",
+          message: "expected value in tuple",
+          fixIts: ["insert value"]
+        ),
+      ],
+      fixedSource:
+        #"""
+        \Foo.method<Int>
+        (arg: <#expression#>)
+        """#,
+      experimentalFeatures: .keypathWithMethodMembers
+    )
+  }
+
   func testKeyPathSubscript() {
     assertParse(
       #"\Foo.Type.[2]"#,
