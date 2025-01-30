@@ -355,6 +355,7 @@ allows Swift tools to parse, inspect, generate, and transform Swift source code.
 - <doc:SwiftSyntax/GenericParameterClauseSyntax>
 - <doc:SwiftSyntax/InheritanceClauseSyntax>
 - <doc:SwiftSyntax/InitializerClauseSyntax>
+- <doc:SwiftSyntax/KeyPathMethodComponentSyntax>
 - <doc:SwiftSyntax/KeyPathOptionalComponentSyntax>
 - <doc:SwiftSyntax/KeyPathPropertyComponentSyntax>
 - <doc:SwiftSyntax/KeyPathSubscriptComponentSyntax>

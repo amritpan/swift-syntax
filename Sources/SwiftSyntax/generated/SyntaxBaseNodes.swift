@@ -1671,6 +1671,7 @@ extension Syntax {
       .node(KeyPathComponentListSyntax.self),
       .node(KeyPathComponentSyntax.self),
       .node(KeyPathExprSyntax.self),
+      .node(KeyPathMethodComponentSyntax.self),
       .node(KeyPathOptionalComponentSyntax.self),
       .node(KeyPathPropertyComponentSyntax.self),
       .node(KeyPathSubscriptComponentSyntax.self),

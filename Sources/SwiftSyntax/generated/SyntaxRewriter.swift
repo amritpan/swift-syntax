@@ -1175,6 +1175,13 @@ open class SyntaxRewriter {
     return ExprSyntax(KeyPathExprSyntax(unsafeCasting: visitChildren(node._syntaxNode)))
   }
 
+  /// Visit a ``KeyPathMethodComponentSyntax``.
+  ///   - Parameter node: the node that is being visited
+  ///   - Returns: the rewritten node
+  open func visit(_ node: KeyPathMethodComponentSyntax) -> KeyPathMethodComponentSyntax {
+    return KeyPathMethodComponentSyntax(unsafeCasting: visitChildren(node._syntaxNode))
+  }
+
   /// Visit a ``KeyPathOptionalComponentSyntax``.
   ///   - Parameter node: the node that is being visited
   ///   - Returns: the rewritten node
@@ -2920,6 +2927,11 @@ open class SyntaxRewriter {
   }
 
   @inline(never)
+  private func visitKeyPathMethodComponentSyntaxImpl(_ node: Syntax) -> Syntax {
+    Syntax(visit(KeyPathMethodComponentSyntax(unsafeCasting: node)))
+  }
+
+  @inline(never)
   private func visitKeyPathOptionalComponentSyntaxImpl(_ node: Syntax) -> Syntax {
     Syntax(visit(KeyPathOptionalComponentSyntax(unsafeCasting: node)))
   }
@@ -3913,6 +3925,8 @@ open class SyntaxRewriter {
       return self.visitKeyPathComponentSyntaxImpl(_:)
     case .keyPathExpr:
       return self.visitKeyPathExprSyntaxImpl(_:)
+    case .keyPathMethodComponent:
+      return self.visitKeyPathMethodComponentSyntaxImpl(_:)
     case .keyPathOptionalComponent:
       return self.visitKeyPathOptionalComponentSyntaxImpl(_:)
     case .keyPathPropertyComponent:
@@ -4493,6 +4507,8 @@ open class SyntaxRewriter {
       return visitKeyPathComponentSyntaxImpl(node)
     case .keyPathExpr:
       return visitKeyPathExprSyntaxImpl(node)
+    case .keyPathMethodComponent:
+      return visitKeyPathMethodComponentSyntaxImpl(node)
     case .keyPathOptionalComponent:
       return visitKeyPathOptionalComponentSyntaxImpl(node)
     case .keyPathPropertyComponent:
