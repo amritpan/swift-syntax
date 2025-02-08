@@ -1888,6 +1888,20 @@ open class SyntaxVisitor {
   open func visitPost(_ node: KeyPathExprSyntax) {
   }
 
+  /// Visiting `KeyPathMethodComponentSyntax` specifically.
+  ///   - Parameter node: the node we are visiting.
+  ///   - Returns: how should we continue visiting.
+  @_spi(ExperimentalLanguageFeatures)
+  open func visit(_ node: KeyPathMethodComponentSyntax) -> SyntaxVisitorContinueKind {
+    return .visitChildren
+  }
+
+  /// The function called after visiting `KeyPathMethodComponentSyntax` and its descendants.
+  ///   - node: the node we just finished visiting.
+  @_spi(ExperimentalLanguageFeatures)
+  open func visitPost(_ node: KeyPathMethodComponentSyntax) {
+  }
+
   /// Visiting ``KeyPathOptionalComponentSyntax`` specifically.
   ///   - Parameter node: the node we are visiting.
   ///   - Returns: how should we continue visiting.
@@ -4734,6 +4748,14 @@ open class SyntaxVisitor {
   }
 
   @inline(never)
+  private func visitKeyPathMethodComponentSyntaxImpl(_ node: Syntax) {
+    if visit(KeyPathMethodComponentSyntax(unsafeCasting: node)) == .visitChildren {
+      visitChildren(node)
+    }
+    visitPost(KeyPathMethodComponentSyntax(unsafeCasting: node))
+  }
+
+  @inline(never)
   private func visitKeyPathOptionalComponentSyntaxImpl(_ node: Syntax) {
     if visit(KeyPathOptionalComponentSyntax(unsafeCasting: node)) == .visitChildren {
       visitChildren(node)
@@ -6125,6 +6147,8 @@ open class SyntaxVisitor {
       return self.visitKeyPathComponentSyntaxImpl(_:)
     case .keyPathExpr:
       return self.visitKeyPathExprSyntaxImpl(_:)
+    case .keyPathMethodComponent:
+      return self.visitKeyPathMethodComponentSyntaxImpl(_:)
     case .keyPathOptionalComponent:
       return self.visitKeyPathOptionalComponentSyntaxImpl(_:)
     case .keyPathPropertyComponent:
@@ -6707,6 +6731,8 @@ open class SyntaxVisitor {
       self.visitKeyPathComponentSyntaxImpl(node)
     case .keyPathExpr:
       self.visitKeyPathExprSyntaxImpl(node)
+    case .keyPathMethodComponent:
+      self.visitKeyPathMethodComponentSyntaxImpl(node)
     case .keyPathOptionalComponent:
       self.visitKeyPathOptionalComponentSyntaxImpl(node)
     case .keyPathPropertyComponent:
